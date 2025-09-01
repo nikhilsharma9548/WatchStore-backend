@@ -1,6 +1,6 @@
 import express from 'express'
 import { upload } from '../Configs/Multer.js';
-import authAdmin from '../MiddleWare/authAdmin.middleware.js';
+import authAdmin from '../MiddleWare/authadmin.middleware.js';
 import { addProduct, changeStock, productById, productList } from '../Controllers/product.controller.js';
 
 const productRouter = express.Router();
