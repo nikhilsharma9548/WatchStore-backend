@@ -26,7 +26,7 @@ const allowedOrigins = ['https://watch-store-frontend-three.vercel.app']
 
 app.use(cookieParser());
 app.use(express.json());
-app.use(cors({origin : allowedOrigins, credentials: true}));
+app.use(cors({origin : allowedOrigins, credentials: true  }));
 
 
 app.get('/', (req, res) => {res.send('API Working')});
