@@ -16,7 +16,7 @@ await connectDB();
 await connectClouudinary()
 
 const app = express();
-app.set("trust proxy", 1); // ✅ add this before app.use(cors)
+app.set("trust proxy", 1);  // ✅ required for Render / proxies
 const PORT = process.env.PORT || 5000;
 
 const allowedOrigins = ['https://watch-store-frontend-three.vercel.app']
@@ -36,9 +36,6 @@ app.use('/api/product', productRouter)
 app.use('/api/cart', cartRouter)
 app.use('/api/address', addressRouter)
 app.use('/api/order', orderRouter)
-
-
-
 
 app.listen(PORT, () =>{
     console.log(`Server is running on port ${PORT}`);
