@@ -18,6 +18,10 @@ const userSchema = new mongoose.Schema({
         type:String,
         required: true
     },
+    image: {
+    type: String, // yaha Cloudinary ka URL store hoga
+    default: ""
+  },
     cartItems:{
         type:Object,
         default: {}

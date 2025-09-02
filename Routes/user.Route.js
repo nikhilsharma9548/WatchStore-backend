@@ -8,6 +8,7 @@ const userRouter = express.Router();
 userRouter.post('/register', register)
 userRouter.post('/login', login)
 userRouter.get('/is-auth',userAuth, isAuth)
+router.post("/upload-profile", userAuth, upload.single("image"), uploadProfileImage);
 userRouter.post('/logout', logout)
 
 
