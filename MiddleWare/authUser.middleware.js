@@ -15,6 +15,8 @@ const userAuth = async (req, res, next) => {
             if (!req.body) req.body = {}; // ✅ IMPORTANT LINE
             req.body.userId = tokenDecode.id;
             next();
+
+            console.log("JWT_SECRET:", process.env.JWT_SECRET)
         } else {
             return res.json({ success: false, message: "Not authorized. Please login again" });
         }
