@@ -16,9 +16,9 @@ console.log("JWT_SECRET:", process.env.JWT_SECRET);
           console.log(error)
 
         if (tokenDecode.id) {
-            // if (!req.body) req.body = {}; // ✅ IMPORTANT LINE
-            // req.body.userId = tokenDecode.id;
-             req.userId = tokenDecode.id;
+            if (!req.body) req.body = {}; // ✅ IMPORTANT LINE
+            req.body.userId = tokenDecode.id;
+            //  req.userId = tokenDecode.id;
             next();
         } else {
             return res.json({ success: false, message: "Not authorized. Please login again" });
