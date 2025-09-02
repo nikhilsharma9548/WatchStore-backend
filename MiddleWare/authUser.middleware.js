@@ -24,6 +24,9 @@ const userAuth = async (req, res, next) => {
     } catch (error) {
         return res.json({ success: false, message: "Data not found" });
     }
+    console.log("Token from cookies:", req.cookies.token);
+console.log("JWT_SECRET:", process.env.JWT_SECRET);
+
 };
 
 export default userAuth;
