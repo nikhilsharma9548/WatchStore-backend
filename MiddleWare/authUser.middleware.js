@@ -25,5 +25,4 @@ const userAuth = async (req, res, next) => {
         return res.json({ success: false, message: "Data not found" });
     }
 };
-
 export default userAuth;
