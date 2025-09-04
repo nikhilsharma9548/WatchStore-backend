@@ -1,6 +1,7 @@
 
 import Order from "../Models/order.model.js";
 import Product from "../Models/product.model.js";
+import crypto from "crypto";
 
 // place order COD : /api/orde/cod
 
@@ -26,8 +27,12 @@ export const placeOrderCOD = async (req, res) => {
         // add tax charge 2 %
         amount += Math.floor(amount * 0.02);
 
+        // create a short order id 
+        const shortOrderId = "ORD-" + crypto.randomBytes(3).toString("hex").toUpperCase();
+
         // create order
         await Order.create({
+            orderId: shortOrderId, 
             userId,
             items,
             amount,
@@ -35,7 +40,7 @@ export const placeOrderCOD = async (req, res) => {
             paymentType: "COD"
         });
 
-        return res.json({ success: true, message: "Order Placed" });
+        return res.json({ success: true, message: "Order Placed", orderId: shortOrderId  });
 
     } catch (error) {
         console.log(error.message);
