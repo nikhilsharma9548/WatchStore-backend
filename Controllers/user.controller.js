@@ -113,18 +113,16 @@ export const login =async(req, res) =>{
 
  export const uploadProfileImage = async (req, res) => {
   try {
-    const { userId } = req.body;
+    // relative path save kare
+    const imagePath = `uploads/${req.file.filename}`;
 
-    // req.file.path me image ka cloudinary url aayega
-    const user = await User.findByIdAndUpdate(
-      userId,
-      { image: req.file.path },
-      { new: true }
-    );
+    // user ko update kare
+    const user = await User.findById(req.user.id);
+    user.image = imagePath;
+    await user.save();
 
-    res.json({ success: true, user });
+    res.json({ success: true, image: imagePath });
   } catch (error) {
-    console.log(error);
     res.status(500).json({ success: false, message: error.message });
   }
 };
