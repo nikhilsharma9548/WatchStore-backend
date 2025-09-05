@@ -113,35 +113,18 @@ export const login =async(req, res) =>{
 
  export const uploadProfileImage = async (req, res) => {
   try {
-    const file = req.file;
+    const { userId } = req.body;
 
-    if (!file) {
-      return res.status(400).json({ success: false, message: "No file uploaded" });
-    }
-
-    // Upload to Cloudinary
-    const result = await cloudinary.uploader.upload(file.path, {
-      folder: "users",
-      width: 500,
-      crop: "scale"
-    });
-
-    // Save Cloudinary URL in User model
-    const updatedUser = await User.findByIdAndUpdate(
-      req.userId,   // Agar auth laga hai
-      { image: result.secure_url },
+    // req.file.path me image ka cloudinary url aayega
+    const user = await User.findByIdAndUpdate(
+      userId,
+      { image: req.file.path },
       { new: true }
     );
 
-    res.status(200).json({
-      success: true,
-      message: "Image uploaded successfully",
-      imageUrl: result.secure_url,
-      user: updatedUser
-    });
-
+    res.json({ success: true, user });
   } catch (error) {
-    console.error("Upload error:", error);
-    res.status(500).json({ success: false, message: "Server Error" });
+    console.log(error);
+    res.status(500).json({ success: false, message: error.message });
   }
 };
