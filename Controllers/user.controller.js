@@ -121,7 +121,7 @@ export const uploadImage = async (req, res) => {
     const { userId } = req.body;
 
     // ✅ Cloudinary pe stream upload karo
-    const stream = cloudinary.v2.uploader.upload_stream(
+    const stream = cloudinary.uploader.upload_stream(
       { folder: "user_profiles" },
       async (error, result) => {
         if (error) {
@@ -150,4 +150,4 @@ export const uploadImage = async (req, res) => {
   } catch (error) {
     return res.json({ success: false, message: error.message });
   }
-};
+};  
