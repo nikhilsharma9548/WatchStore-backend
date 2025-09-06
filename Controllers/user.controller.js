@@ -112,50 +112,42 @@ export const login =async(req, res) =>{
 
  //  upload user image : api/user/upload_image
 
- export const uploadImage = async(req, res) => {
-
-    try {
+export const uploadImage = async (req, res) => {
+  try {
     if (!req.file) {
       return res.json({ success: false, message: "No file uploaded" });
     }
 
     const { userId } = req.body;
 
-    // File ko Cloudinary pe upload karo
-    const result = await cloudinary.v2.uploader.upload_stream(
-      { folder: "user_profiles" },
-      async (error, uploadResult) => {
-        if (error) return res.json({ success: false, message: error.message });
-
-        // User update karo DB me
-        const user = await User.findById(userId);
-        if (!user) return res.json({ success: false, message: "User not found" });
-
-        user.image = uploadResult.secure_url;
-        await user.save();
-
-        res.json({ success: true, message: "Profile image updated!", image: user.image });
-      }
-    );
-
-    // Cloudinary stream pe file bhejna
+    // ✅ Cloudinary pe stream upload karo
     const stream = cloudinary.v2.uploader.upload_stream(
       { folder: "user_profiles" },
-      async (error, uploadResult) => {
-        if (error) return res.json({ success: false, message: error.message });
+      async (error, result) => {
+        if (error) {
+          return res.json({ success: false, message: error.message });
+        }
 
+        // ✅ DB me user image update karo
         const user = await User.findById(userId);
-        if (!user) return res.json({ success: false, message: "User not found" });
+        if (!user) {
+          return res.json({ success: false, message: "User not found" });
+        }
 
-        user.image = uploadResult.secure_url;
+        user.image = result.secure_url;
         await user.save();
 
-        res.json({ success: true, message: "Profile image updated!", image: user.image });
+        return res.json({
+          success: true,
+          message: "Profile image updated!",
+          image: user.image,
+        });
       }
     );
 
+    // ✅ Stream me file ka buffer send karo
     stream.end(req.file.buffer);
   } catch (error) {
-    res.json({ success: false, message: error.message });
+    return res.json({ success: false, message: error.message });
   }
- }
+};
