@@ -2,6 +2,7 @@ import {v2 as cloudinary} from 'cloudinary'
 import User from "../Models/User.model.js";
 import bcrypt from 'bcryptjs'
 import jwt from "jsonwebtoken"
+import { response } from 'express';
 
 
 
@@ -109,20 +110,27 @@ export const login =async(req, res) =>{
     }
  }
 
- //  upload image in DB
+ //  upload user image : api/user/upload_image
 
- export const uploadProfileImage = async (req, res) => {
-  try {
-    // relative path save kare
-    const imagePath = `uploads/${req.file.filename}`;
+ export const uploadImage = async(req, res) => {
 
-    // user ko update kare
-    const user = await User.findById(req.user.id);
-    user.image = imagePath;
-    await user.save();
+    try {
+        const image = req.files
 
-    res.json({ success: true, image: imagePath });
-  } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
-  }
-};
+        if(!image){
+            res.json({success: false, message: "please select an image"})
+        }
+
+        let imageUrl = await Promise.all(
+            image.map(async(item) =>{
+                let result = await cloudinary.uploader.upload(item.path, {resource_type: "image"})
+                return result.secure_url
+            })
+        )
+        await User.create({image: imageUrl})
+        res.json({success: true, message: "image updated"})
+    } catch (error) {
+        
+    }
+
+ }
