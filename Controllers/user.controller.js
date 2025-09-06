@@ -115,22 +115,47 @@ export const login =async(req, res) =>{
  export const uploadImage = async(req, res) => {
 
     try {
-        const image = req.files
-
-        if(!image){
-            res.json({success: false, message: "please select an image"})
-        }
-
-        let imageUrl = await Promise.all(
-            image.map(async(item) =>{
-                let result = await cloudinary.uploader.upload(item.path, {resource_type: "image"})
-                return result.secure_url
-            })
-        )
-        await User.create({image: imageUrl})
-        res.json({success: true, message: "image updated"})
-    } catch (error) {
-        
+    if (!req.file) {
+      return res.json({ success: false, message: "No file uploaded" });
     }
 
+    const { userId } = req.body;
+
+    // File ko Cloudinary pe upload karo
+    const result = await cloudinary.v2.uploader.upload_stream(
+      { folder: "user_profiles" },
+      async (error, uploadResult) => {
+        if (error) return res.json({ success: false, message: error.message });
+
+        // User update karo DB me
+        const user = await User.findById(userId);
+        if (!user) return res.json({ success: false, message: "User not found" });
+
+        user.image = uploadResult.secure_url;
+        await user.save();
+
+        res.json({ success: true, message: "Profile image updated!", image: user.image });
+      }
+    );
+
+    // Cloudinary stream pe file bhejna
+    const stream = cloudinary.v2.uploader.upload_stream(
+      { folder: "user_profiles" },
+      async (error, uploadResult) => {
+        if (error) return res.json({ success: false, message: error.message });
+
+        const user = await User.findById(userId);
+        if (!user) return res.json({ success: false, message: "User not found" });
+
+        user.image = uploadResult.secure_url;
+        await user.save();
+
+        res.json({ success: true, message: "Profile image updated!", image: user.image });
+      }
+    );
+
+    stream.end(req.file.buffer);
+  } catch (error) {
+    res.json({ success: false, message: error.message });
+  }
  }
