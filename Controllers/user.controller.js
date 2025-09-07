@@ -125,7 +125,7 @@ try {
     folder: "user_profile"
   });
 
-  const user = await User.findById(req.user.id);
+  const user = await User.findById(req.userId);
     user.image = result.secure_url;
     await user.save();
     
