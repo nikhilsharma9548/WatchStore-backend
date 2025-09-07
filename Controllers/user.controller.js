@@ -113,41 +113,23 @@ export const login =async(req, res) =>{
  //  upload user image : api/user/upload_image
 
 export const uploadImage = async (req, res) => {
-  try {
-    if (!req.file) {
-      return res.json({ success: false, message: "No file uploaded" });
-    }
-
-    const { userId } = req.body;
-
-    // ✅ Cloudinary pe stream upload karo
-    const stream = cloudinary.uploader.upload_stream(
-      { folder: "user_profiles" },
-      async (error, result) => {
-        if (error) {
-          return res.json({ success: false, message: error.message });
-        }
-
-        // ✅ DB me user image update karo
-        const user = await User.findById(userId);
-        if (!user) {
-          return res.json({ success: false, message: "User not found" });
-        }
-
-        user.image = result.secure_url;
-        await user.save();
-
-        return res.json({
-          success: true,
-          message: "Profile image updated!",
-          image: user.image,
-        });
-      }
-    );
-
-    // ✅ Stream me file ka buffer send karo
-    stream.end(req.file.buffer);
-  } catch (error) {
-    return res.json({ success: false, message: error.message });
+try {
+  if(!req.file){
+    return res.json({success: true, message: "No image uploaded" })
   }
+
+  //upload to cloudinary
+
+  const result = await cloudinary.uploader.upload(req.file.path, {
+    folder: "user_profile"
+  });
+
+  const user = await User.findById(req.user.id);
+    user.image = result.secure_url;
+    await user.save();
+    
+    res.json({ success: true, imageUrl: result.secure_url });
+} catch (error) {
+   res.status(500).json({ message: error.message });
+}
 };  
