@@ -114,6 +114,7 @@ export const login =async(req, res) =>{
 
 export const uploadImage = async (req, res) => {
 try {
+       console.log("File from multer:", req.file); 
   if(!req.file){
     return res.json({success: true, message: "No image uploaded" })
   }
