@@ -9,7 +9,7 @@ const userRouter = express.Router();
 userRouter.post('/register', register)
 userRouter.post('/login', login)
 userRouter.get('/is-auth',userAuth, isAuth)
-userRouter.post("/upload", upload.single("image"), userAuth, uploadImage);
+userRouter.post("/upload", userAuth, upload.single("image"), uploadImage);
 userRouter.post('/logout', logout)
 
 
