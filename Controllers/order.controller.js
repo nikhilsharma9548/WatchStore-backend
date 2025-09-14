@@ -159,7 +159,7 @@ export const stripeWebhook = async (req, res) => {
             const { orderId, userId } = session.data[0].metadata ;
 
             // update the order status
-            await Order.findbyIdAndUpdate(orderId, {
+            await Order.findByIdAndUpdate(orderId, {
                 isPaid: true,
                 // paymentDetails: session.data[0],
             })
