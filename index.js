@@ -19,8 +19,8 @@ await connectClouudinary()
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-const allowedOrigins = ['http://localhost:5173'];
-// https://watch-store-frontend-three.vercel.app
+const allowedOrigins = ['https://watch-store-frontend-three.vercel.app'];
+//
 
 app.post('/webhook', express.raw({type: 'application/json'}),stripeWebhook);
 
