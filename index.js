@@ -10,6 +10,7 @@ import productRouter from './Routes/product.Route.js';
 import cartRouter from './Routes/cart.Route.js';
 import addressRouter from './Routes/address.Route.js';
 import orderRouter from './Routes/order.Route.js';
+import { stripeWebhook } from './Controllers/order.controller.js';
 
 // mongodb connecion
 await connectDB();
@@ -18,11 +19,12 @@ await connectClouudinary()
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-const allowedOrigins = ['https://watch-store-frontend-three.vercel.app']
+const allowedOrigins = ['http://localhost:5173'];
+// https://watch-store-frontend-three.vercel.app
 
+app.post('/webhook', express.raw({type: 'application/json'}),stripeWebhook);
 
 //MiddleWare configgration
-
 app.use(cookieParser());
 app.use(express.json());
 app.use(cors({origin : allowedOrigins, credentials: true}));
