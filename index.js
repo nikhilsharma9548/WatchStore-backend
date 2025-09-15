@@ -29,7 +29,7 @@ app.use(cors({
 }));
 
 // ✅ Webhook ko raw body chahiye, isliye cors ke baad define karo
-app.post('/webhook', express.raw({ type: 'application/json' }), stripeWebhook);
+app.post('/stripe', express.raw({ type: 'application/json' }), stripeWebhook);
 
 // ✅ Ye middlewares ab CORS ke baad aa sakte hain
 app.use(cookieParser());
