@@ -99,7 +99,7 @@ export const placeOrderStripe = async (req, res) => {
         const line_items = productData.map((item) => {
             return{
                 price_data: {
-                    currency: "inr",
+                    currency: "usd",
                     product_data: {
                         name: item.name,
                     },
@@ -116,7 +116,7 @@ export const placeOrderStripe = async (req, res) => {
             success_url: `${origin}/loader?next=my-orders`,
             cancel_url: `${origin}/cart`,
             metadata: {
-                orderId: order._id.toString(),
+                orderId: shortOrderId,
                 userId,
             }
         })
@@ -152,11 +152,11 @@ export const stripeWebhook = async (req, res) => {
             const paymentIntent = event.data.object;
             const paymentIntentId = paymentIntent.id;
 
-            // getting metadata from payment intent
+            // getting session metadata from payment intent
             const session = await stripeInstance.checkout.sessions.list({
                 payment_intent: paymentIntentId,
             })
-            const { orderId, userId } = session.data[0].metadata ;
+            const { orderId, userId } = session.data[0].metadata;
 
             // update the order status
             await Order.findByIdAndUpdate(orderId, {
