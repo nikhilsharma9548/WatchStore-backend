@@ -33,7 +33,8 @@ items:[{
         },
     status:{
             type:String,
-           default: 'Order Placed'
+            enum: ["Order placed","cancelled"],
+            default: 'Order Placed'
         },
     paymentType:{
             type:String,
