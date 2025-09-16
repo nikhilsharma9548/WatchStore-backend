@@ -1,3 +1,4 @@
+import e from "express";
 import mongoose from "mongoose";
 
 const orderSchema = new mongoose.Schema({
@@ -32,8 +33,9 @@ items:[{
             ref: "address"
         },
     status:{
-            type:String,
-           default: 'Order Placed'
+            type: String,
+            enum: ['Order Placed', 'Cancelled'],
+            default: 'Order Placed'
         },
     paymentType:{
             type:String,
