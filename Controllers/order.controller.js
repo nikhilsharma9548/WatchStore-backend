@@ -188,40 +188,43 @@ export const stripeWebhook = async (req, res) => {
 
 // cancel Order by user 
 
-export const cancelOrder = async(req, res) =>{
-    
-     try {
-    const { orderId, userId } = req.body;
+export const cancelOrder = async (req, res) => {
+  try {
+    const { orderId } = req.body;
 
-    // Step 1: Check missing data
+    // 1. Validate input
     if (!orderId) {
-      return res.Mathjson({ success: false, message: "Order ID required" });
+      return res.status(400).json({ success: false, message: "Order ID is required" });
     }
 
-    // Step 2: Find order
-    const order = await Order.findOne({ _id: orderId, userId }); 
+    // 2. Find order by _id & userId
+    const order = await Order.findOne({ _id: orderId, userId: req.user._id });
     if (!order) {
-      return res.json({ success: false, message: "Order not found" });
+      return res.status(404).json({ success: false, message: "Order not found" });
     }
 
-    // Step 3: Check if already cancelled
+    // 3. Prevent cancellation if shipped/delivered
+    if (["shipped", "delivered"].includes(order.status)) {
+      return res.status(400).json({ success: false, message: "Cannot cancel shipped/delivered order" });
+    }
+
+    // 4. Check if already cancelled
     if (order.status === "cancelled") {
-      return res.json({ success: false, message: "Order already cancelled" });
+      return res.status(400).json({ success: false, message: "Order already cancelled" });
     }
 
-    // Step 4: Update status
+    // 5. Update status
     order.status = "cancelled";
     await order.save();
 
-    // Step 5: Send response
+    // 6. Send response
     res.json({ success: true, message: "Order cancelled successfully", order });
 
   } catch (error) {
     console.error("Cancel Order Error:", error);
-    res.json({ success: false, message: "Something went wrong" });
+    res.status(500).json({ success: false, message: "Server error while cancelling order" });
   }
-
-}
+};
 
 // get order by userid : /api/order/user
 
