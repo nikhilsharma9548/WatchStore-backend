@@ -189,30 +189,31 @@ export const stripeWebhook = async (req, res) => {
 // cancel Order by user 
 
 export const cancelOrder = async (req, res) => {
-    // try {
-    //     const { orderId } = req.body;
+  try {
+    const { orderId } = req.params; // frontend se orderId aayega
 
-    //     if (!orderId) {
-    //         return res.status(400).json({ success: false, message: "Order ID is required" });
-    //     }
+    // Pehle order find karo
+    const order = await OrderModel.findById(orderId);
+    if (!order) {
+      return res.status(404).json({ success: false, message: "Order not found" });
+    }
 
-    //     // Find the order
-    //     const order = await Order.findById(orderId);
-    //     if (!order) {
-    //         return res.status(404).json({ success: false, message: "Order not found" });
-    //     }
+    // Agar already cancel hai to dobara cancel na ho
+    if (order.status === "cancelled") {
+      return res.status(400).json({ success: false, message: "Order is already cancelled" });
+    }
 
-    //     // Update order status
-    //     order.status = "Cancelled";
-    //     await order.save();
+    // Status ko cancelled karo (enum me ye allowed hai)
+    order.status = "cancelled";
+    await order.save();
 
-    //     res.status(200).json({ success: true, message: "Order cancelled", order });
-
-    // } catch (error) {
-    //     console.error(error);
-    //     res.status(500).json({ success: false, message: "Server error" });
-    // }
+    res.json({ success: true, message: "Order cancelled successfully", order });
+  } catch (error) {
+    console.error("Cancel Order Error:", error);
+    res.status(500).json({ success: false, message: "Something went wrong" });
+  }
 };
+
 
 // get order by userid : /api/order/user
 

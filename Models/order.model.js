@@ -33,13 +33,8 @@ items:[{
             ref: "address"
         },
     status:{
-<<<<<<< HEAD
             type: String,
             enum: ['Order Placed', 'Cancelled'],
-=======
-            type:String,
-            enum: ["Order placed","cancelled"],
->>>>>>> 6f3b089595944d151397a8fb8a0cdbf44523f9f8
             default: 'Order Placed'
         },
     paymentType:{
