@@ -18,6 +18,11 @@ const userSchema = new mongoose.Schema({
         type:String,
         required: true
     },
+    theme: {
+    type: String,
+    enum: ["light", "dark"],
+    default: "light",
+    },
     image:{
         type:String,
         default: ""
