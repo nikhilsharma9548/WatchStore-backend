@@ -12,7 +12,7 @@ export const addAddress = async(req, res) =>{
 
     } catch (error) {
         console.log(error.message)
-         res.json({success: false, message: "please add address" })
+         res.json({success: false, message:error.message })
     }
 }
 
@@ -22,6 +22,7 @@ export const getAddress = async(req, res) =>{
     try {
         const { userId } = req.body
         const addresses = await Address.find({userId})
+        if(!addresses) return res.json({success: false, message: "No address found"})
         res.json({success: true, addresses})
     } catch (error) {
          console.log(error.message)
