@@ -192,6 +192,7 @@ export const cancelOrder = async (req, res) => {
         const { orderId } = req.params;
         console.log("Cancel Order Request Received for ID:", orderId);
 
+        // 🟢 Order find karna
         const order = await Order.findById(orderId);
         console.log("Order Found:", order);
 
@@ -199,19 +200,24 @@ export const cancelOrder = async (req, res) => {
             return res.status(404).json({ success: false, message: "Order not found" });
         }
 
-        if (order.status === "cancelled") {
+        if (order.status === "Cancelled") {
             return res.json({ success: false, message: "Order already cancelled" });
         }
 
-        order.status = "cancelled";
+        order.status = "Cancelled"; // ✅ Model ke enum ke hisab se
         await order.save();
 
-        res.json({ success: true, message: "Order cancelled successfully" });
+        return res.json({ success: true, message: "Order cancelled", order });
     } catch (error) {
         console.error("Cancel Order Error:", error);
-        res.status(500).json({ success: false, message: "Server error", error: error.message });
+        return res.status(500).json({
+            success: false,
+            message: "Server error",
+            error: error.message,
+        });
     }
 };
+
 
 // get order by userid : /api/order/user
 
