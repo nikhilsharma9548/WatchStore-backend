@@ -187,7 +187,28 @@ export const stripeWebhook = async (req, res) => {
 }
 
 // cancel Order by user 
+export const cancelOrder = async (req, res) => {
+    try {
+        const { orderId } = req.params;
+        const order = await Order.findById(orderId);
 
+        if (!order) {
+            return res.json({ success: false, message: "Order not found" });
+        }
+
+        if (order.status === "cancelled") {
+            return res.json({ success: false, message: "Order already cancelled" });
+        }
+
+        order.status = "cancelled";
+        await order.save();
+
+        res.json({ success: true, message: "Order cancelled" });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: "Server error" });
+    }
+};
 // get order by userid : /api/order/user
 
 export const getUserOrder = async(req, res) =>{

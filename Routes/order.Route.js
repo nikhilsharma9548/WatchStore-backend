@@ -8,7 +8,7 @@ const orderRouter = express.Router()
 orderRouter.post('/cod', userAuth, placeOrderCOD)
 orderRouter.get('/user', userAuth, getUserOrder)
 orderRouter.get('/admin', authAdmin, getAllOrder)
-// orderRouter.post('/cancel', cancelOrder)
+orderRouter.put("/cancel/:orderId", cancelOrder);
 orderRouter.post('/stripe', userAuth, placeOrderStripe)
 
 export default orderRouter
