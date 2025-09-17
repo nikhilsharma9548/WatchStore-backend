@@ -11,8 +11,11 @@ export const placeOrderCOD = async (req, res) => {
     try {
         const { userId, items, address } = req.body;
 
-        if (!address || items.length === 0) {
+        if (items.length === 0) {
             return res.json({ success: false, message: "please select a product"});
+        }
+        if (!address) {
+            return res.json({ success: false, message: "please select an address"});
         }
 
         // calculate the Amount using Items
