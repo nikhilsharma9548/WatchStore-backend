@@ -143,8 +143,7 @@ export const updateTheme = async (req, res) => {
     console.log("📥 Theme update request body:", req.body);
     console.log("👤 User from middleware:", req.user);
 
-    const { theme } = req.body;
-    const userId = req.user?.id; // safe check
+    const { theme, userId } = req.body;
 
     if (!userId) {
       console.log("❌ No userId found from middleware");
