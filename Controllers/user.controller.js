@@ -134,36 +134,3 @@ try {
    res.status(500).json({ message: error.message });
 }
 };  
-
-
-//update user : /api/user/theme
-
-export const updateTheme = async (req, res) => {
-  try {
-    console.log("📥 Theme update request body:", req.body);
-    console.log("👤 User from middleware:", req.user);
-
-    const { theme, userId } = req.body;
-
-    if (!userId) {
-      console.log("❌ No userId found from middleware");
-      return res.status(401).json({ success: false, message: "User not authorized" });
-    }
-
-    if (!["light", "dark"].includes(theme)) {
-      return res.json({ success: false, message: "Invalid theme" });
-    }
-
-    const user = await User.findByIdAndUpdate(userId, { theme }, { new: true });
-
-    if (!user) {
-      console.log("❌ User not found in DB for ID:", userId);
-      return res.json({ success: false, message: "User not found" });
-    }
-
-    res.json({ success: true, theme: user.theme });
-  } catch (error) {
-    console.log("❌ Error in updateTheme:", error);
-    res.json({ success: false, message: "Server Error" });
-  }
-};
